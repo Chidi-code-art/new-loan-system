@@ -230,8 +230,10 @@ if st.button(" Predict Loan Approval"):
   # =====================================================
     # LIME
     # =====================================================
-
-    st.markdown("## 🍋 LIME Explainability")
+    input_row = input_data.iloc[0].values
+    input_row = np.array(input_row, dtype=float)
+    
+    st.markdown("##  LIME Explainability")
 
     lime_explainer = lime.lime_tabular.LimeTabularExplainer(
         training_data=np.array(x_train),
@@ -241,9 +243,9 @@ if st.button(" Predict Loan Approval"):
     )
 
     exp = lime_explainer.explain_instance(
-        input_data.iloc[0],
-        model.predict_proba,
-        num_features=7
+    input_data.iloc[0].values,   # convert to numpy array
+    model.predict_proba,
+    num_features=7
     )
 
     lime_df = pd.DataFrame(
