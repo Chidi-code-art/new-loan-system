@@ -227,31 +227,41 @@ if st.button(" Predict Loan Approval"):
 
     st.pyplot(fig2)
 
-       # ===============================
-    # LIME FIXED VERSION
-    # ===============================
-    
+  # =====================================================
+    # LIME
+    # =====================================================
+
+    st.markdown("## 🍋 LIME Explainability")
+
     lime_explainer = lime.lime_tabular.LimeTabularExplainer(
-        training_data=x_train.values,
+        training_data=np.array(x_train),
         feature_names=x_train.columns.tolist(),
         class_names=['Denied', 'Approved'],
         mode='classification'
     )
-    
-    # Convert input row to numpy array (VERY IMPORTANT FIX)
-    input_row = input_data.values[0]
-    
+
     exp = lime_explainer.explain_instance(
-        data_row=input_row,
-        predict_fn=model.predict_proba,
+        input_data.iloc[0],
+        model.predict_proba,
         num_features=7
     )
-    
+
     lime_df = pd.DataFrame(
         exp.as_list(),
         columns=['Feature', 'Contribution']
     )
 
+    fig3 = px.bar(
+        lime_df,
+        x='Contribution',
+        y='Feature',
+        orientation='h',
+        title='LIME Feature Contributions'
+    )
+
+    st.plotly_chart(fig3, use_container_width=True)
+
+    st.markdown("---")
     # =====================================================
     # FEATURE IMPORTANCE
     # =====================================================
